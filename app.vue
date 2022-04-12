@@ -5,6 +5,15 @@ const todoStore = useTodoStore();
 const newTodo = ref("");
 const error = ref(false);
 
+// const { data } = await useAsyncData(
+//   "todos",
+//   () => $fetch(`/.netlify/functions/todos-read-all`),
+//   { lazy: false, server: false }
+// );
+// console.log(data.value);
+
+await todoStore.fetchTodos();
+
 const saveNewTodo = () => {
   if (!newTodo.value) {
     error.value = true;
@@ -25,6 +34,9 @@ const saveNewTodo = () => {
     <section class="md:w-8/12 md:mx-auto lg:w-6/12 py-4 rounded-lg">
       <todo-input v-model="newTodo" @save="saveNewTodo" :error="error" />
       <todo-list :items="todoStore.getOrderedTodos.reverse()" />
+      <!-- <div v-for="(todo, index) in todos" :key="index">
+        {{ todo }}
+      </div> -->
     </section>
   </main>
 </template>

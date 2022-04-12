@@ -37,6 +37,10 @@ const getters = {
 };
 
 const actions = {
+  async fetchTodos() {
+    // const data = await $fetch(`/.netlify/functions/todos-read-all`, { method: 'get'});
+    // console.log(data);
+  },
   add(partialTodo: TodoAdd) {
     const todo: Todo = {
       id: uuid(),
