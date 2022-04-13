@@ -12,7 +12,7 @@ const deleteTodo = (id: number) => todoStore.remove(id);
 
 const updateTodoDone = (todo: Todo) => {
   const currentState = todo.done;
-  todoStore.update(todo.id, { done: !currentState });
+  todoStore.update(todo.dbId, { done: !currentState });
 };
 
 const parsedDate = computed(() =>
@@ -49,7 +49,7 @@ const parsedDate = computed(() =>
       />
       <x-circle-icon
         class="w-10 h-10 transition-all duration-200 text-red-400 cursor-pointer hover:text-red-600"
-        @click="deleteTodo(todo.id)"
+        @click="deleteTodo(todo.dbId)"
       />
     </section>
   </list-item-container>

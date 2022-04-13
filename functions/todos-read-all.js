@@ -11,7 +11,7 @@ exports.handler = (event, context) => {
   });
 
   return client
-    .query(q.Paginate(q.Match(q.Ref("indexes/all_todos"))))
+    .query(q.Paginate(q.Match(q.Ref("indexes/all_todos_nuxt3"))))
     .then((response) => {
       const todoRefs = response.data;
       console.log("Todo refs", todoRefs);

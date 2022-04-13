@@ -37,30 +37,47 @@ const getters = {
 };
 
 const actions = {
-  async fetchTodos() {
-    // const data = await $fetch(`/.netlify/functions/todos-read-all`, { method: 'get'});
-    // console.log(data);
+  async fetchTodos(data) {
+    this.items = (data || []).map((item) => ({
+      ...item.data,
+      dbId: item.ref["@ref"].id,
+      createdAt: new Date(item.data.createdAt),
+      updatedAt: new Date(item.data.updatedAt),
+    }));
   },
-  add(partialTodo: TodoAdd) {
+  async add(partialTodo: TodoAdd) {
+    const id =  uuid();
     const todo: Todo = {
-      id: uuid(),
+      id,
       ...partialTodo,
       done: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     this.items.push(todo);
+    const { data } = await useFetch(`/.netlify/functions/todos-create`, {
+      method: "post",
+      body: todo,
+    });
+    todo.dbId = data.value.ref["@ref"].id;
   },
   remove(id: string) {
-    this.items = this.items.filter((todo) => todo.id !== id);
+    this.items = this.items.filter((todo) => todo.dbId !== id);
+    useFetch(`/.netlify/functions/todos-delete/${id}`, {
+      method: "post",
+    });
   },
-  update(id: string, update: TodoUpdate) {
-    const index = this.items.findIndex((item) => item.id === id);
+  async update(id: string, update: TodoUpdate) {
+    const index = this.items.findIndex((item) => item.dbId === id);
     this.items[index] = {
       ...this.items[index],
       ...update,
       updatedAt: new Date(),
     };
+    await useFetch(`/.netlify/functions/todos-update/${id}`, {
+      method: "post",
+      body: update,
+    });
   },
 };
 

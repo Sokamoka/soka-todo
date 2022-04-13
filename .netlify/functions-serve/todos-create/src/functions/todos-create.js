@@ -11387,28 +11387,27 @@ var require_faunadb = __commonJS({
   }
 });
 
-// functions/todos-read-all.js
+// functions/todos-create.js
 var faunadb = require_faunadb();
 var q = faunadb.query;
-exports.handler = (event, context) => {
-  console.log("Function `todo-read-all` invoked");
+exports.handler = async (event, context) => {
   const client = new faunadb.Client({
     secret: process.env.FAUNADB_SERVER_SECRET,
     domain: process.env.FAUNADB_SERVER_DOMAIN
   });
-  return client.query(q.Paginate(q.Match(q.Ref("indexes/all_todos_nuxt3")))).then((response) => {
-    const todoRefs = response.data;
-    console.log("Todo refs", todoRefs);
-    console.log(`${todoRefs.length} todos found`);
-    const getAllTodoDataQuery = todoRefs.map((ref) => {
-      return q.Get(ref);
-    });
-    return client.query(getAllTodoDataQuery).then((ret) => {
-      return {
-        statusCode: 200,
-        body: JSON.stringify(ret)
-      };
-    });
+  console.log("event:", event.body);
+  const data = JSON.parse(event.body);
+  console.log("data", data);
+  console.log("Function `todo-create` invoked", data);
+  const todoItem = {
+    data
+  };
+  return client.query(q.Create(q.Ref("classes/todos-nuxt3"), todoItem)).then((response) => {
+    console.log("success", response);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(response)
+    };
   }).catch((error) => {
     console.log("error", error);
     return {
@@ -11422,4 +11421,4 @@ object-assign
 (c) Sindre Sorhus
 @license MIT
 */
-//# sourceMappingURL=todos-read-all.js.map
+//# sourceMappingURL=todos-create.js.map

@@ -45,7 +45,7 @@ function createFaunaDB(key) {
     .then(() => {
       return client.query(
         q.Create(q.Ref("indexes"), {
-          name: "all_todos",
+          name: "all_todos_nuxt3",
           source: q.Ref("classes/todos-nuxt3"),
         })
       );
